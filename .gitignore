@@ -1,0 +1,80 @@
+# Visual Studio / Rider / JetBrains
+.vs/
+/.idea/
+/.vscode/
+
+# Build artifacts
+bin/
+obj/
+out/
+publish/
+
+# NuGet packages
+*.nupkg
+*.snupkg
+/.nuget/
+/nupkg/
+/packages/
+# Microsoft Azure Build Output
+csx/
+*.build.csdef
+
+# MSTest test Results
+TestResults/
+[Tt]est[Rr]esult*/
+*.trx
+*.log
+
+# Template-generated
+/TemplateGeneratedFiles/
+
+# User-specific files
+*.suo
+*.user
+*.sln.docstates
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+# .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+**/Properties/
+launchSettings.json
+
+# Unity
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+
+# Rider
+.idea/
+*.sln.iml
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# Visual Studio 2017/2019 cache/options directory
+.vs/
+# Uncomment if you have tasks that create the project's static files in wwwroot
+#wwwroot/
+
+# Custom
+*.cache
+*.bak
+*.log
+node_modules/
+npm-debug.log*
+
