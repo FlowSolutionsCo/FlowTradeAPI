@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.WebUtilities;
 using FlowTrade.Helpers;
 using System.Text;
 using FlowTrade.Services;
+using Microsoft.EntityFrameworkCore;
+using FlowTrade.Interfaces;
 
 namespace FlowTrade.Controllers
 {
@@ -17,13 +19,20 @@ namespace FlowTrade.Controllers
         private readonly SignInManager<User> _signInManager;
         private readonly IConfiguration _configuration;
         private readonly IEmailService _emailService;
+        private readonly IProductionPossibilityRepository _productionPossibilityRepository;
 
-        public AuthenticationController(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration, IEmailService emailService)
+        public AuthenticationController(
+            UserManager<User> userManager, 
+            SignInManager<User> signInManager, 
+            IConfiguration configuration, 
+            IEmailService emailService,
+            IProductionPossibilityRepository productionPossibilityRepository)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _configuration = configuration;
             _emailService = emailService;
+            _productionPossibilityRepository = productionPossibilityRepository;
         }
 
         [HttpPost("register")]
@@ -42,7 +51,20 @@ namespace FlowTrade.Controllers
                 return BadRequest(ModelState);
             }
 
-            var user = new User { UserName = model.Username, Email = model.Email };
+            var productionPossibilities = await _productionPossibilityRepository.GetProductionPossibilitiesByIds(model.ProductionPossibilityIds);
+
+            var user = new User
+            {
+                UserName = model.Username,
+                Email = model.Email,
+                CompanyType = model.CompanyType,
+                AuthorizedPerson = model.AuthorizedPerson,
+                NIP = model.NIP,
+                REGON = model.REGON,
+                Phone = model.Phone,
+                ProductionPossibilities = productionPossibilities
+            };
+
             var result = await _userManager.CreateAsync(user, model.Password);
 
             if (result.Succeeded)
@@ -127,6 +149,18 @@ namespace FlowTrade.Controllers
 
             return BadRequest(result.Errors);
         }
+
+
+        [HttpGet("possibilities-types")]
+        public async Task<ActionResult<IEnumerable<object>>> GetPossibilities()
+        {
+            var possibilities = await _productionPossibilityRepository.GetAllPossibilities();
+
+            var possibilityObjects = possibilities.Select(p => new { p.Id, p.Name }).ToList();
+
+            return Ok(possibilityObjects);
+        }
+
 
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
