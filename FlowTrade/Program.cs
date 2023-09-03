@@ -1,5 +1,7 @@
 using FlowTrade.Data;
+using FlowTrade.Interfaces;
 using FlowTrade.Models;
+using FlowTrade.Repositories;
 using FlowTrade.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -19,8 +21,17 @@ var audience = configuration["Jwt:Audience"];
 
 // Add services to the container.
 builder.Services.AddControllers();
+builder.Services.AddScoped<IProductionPossibilityRepository, ProductionPossibilityRepository>();
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(
+        configuration.GetConnectionString("DefaultConnection"),
+        sqlServerOptionsAction: sqlOptions =>
+        {
+            sqlOptions.EnableRetryOnFailure(
+                maxRetryCount: 5,
+                maxRetryDelay: TimeSpan.FromSeconds(30),
+                errorNumbersToAdd: null);
+        }));
 
 // Add Identity services
 builder.Services.AddIdentity<User, IdentityRole>(options =>
@@ -53,7 +64,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddSingleton<IEmailService, EmailService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddSingleton<EmailService>();
 
 var app = builder.Build();
 

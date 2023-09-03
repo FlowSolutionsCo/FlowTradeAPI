@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using FlowTrade.Models.ProductionRequestModel;
+using System.Reflection.Emit;
 
 namespace FlowTrade.Data
 {
@@ -12,11 +13,14 @@ namespace FlowTrade.Data
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<ProductionRequestModel>().HasKey(pr => pr.RequestId);
 
-            base.OnModelCreating(modelBuilder);
+        public DbSet<ProductionPossibility> ProductionPossibilities { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.Entity<ProductionRequestModel>().HasKey(pr => pr.RequestId);
         }
     }
 }
