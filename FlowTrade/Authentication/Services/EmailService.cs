@@ -3,7 +3,7 @@ using MailKit.Security;
 using MimeKit;
 using System.Net;
 
-namespace FlowTrade.Services
+namespace FlowTrade.Authentication.Services
 {
     public class EmailService : IEmailService
     {

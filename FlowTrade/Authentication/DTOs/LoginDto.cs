@@ -1,4 +1,4 @@
-namespace FlowTrade.DTOs
+namespace FlowTrade.Authentication.DTOs
 {
     public class LoginDto
     {

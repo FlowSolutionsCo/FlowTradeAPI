@@ -1,12 +1,14 @@
-using FlowTrade.Data;
+using FlowTrade.Authentication.Repositories;
+using FlowTrade.Authentication.Services;
+using FlowTrade.Infrastructure.Data;
 using FlowTrade.Interfaces;
 using FlowTrade.Models;
-using FlowTrade.Repositories;
-using FlowTrade.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Reflection;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +22,7 @@ var issuer = configuration["Jwt:Issuer"];
 var audience = configuration["Jwt:Audience"];
 
 // Add services to the container.
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 builder.Services.AddControllers();
 builder.Services.AddScoped<IProductionPossibilityRepository, ProductionPossibilityRepository>();
 builder.Services.AddDbContext<AppDbContext>(options =>

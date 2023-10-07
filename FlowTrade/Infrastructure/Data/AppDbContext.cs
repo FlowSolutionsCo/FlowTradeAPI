@@ -1,9 +1,10 @@
 ﻿using FlowTrade.Models;
+using FlowTrade.ProductionRequest.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection.Emit;
 
-namespace FlowTrade.Data
+namespace FlowTrade.Infrastructure.Data
 {
     public class AppDbContext : IdentityDbContext<UserCompany>
     {

@@ -1,13 +1,13 @@
 using FlowTrade.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using FlowTrade.DTOs;
 using Microsoft.AspNetCore.WebUtilities;
-using FlowTrade.Helpers;
 using System.Text;
-using FlowTrade.Services;
 using Microsoft.EntityFrameworkCore;
 using FlowTrade.Interfaces;
+using FlowTrade.Authentication.DTOs;
+using FlowTrade.Authentication.Helpers;
+using FlowTrade.Authentication.Services;
 
 namespace FlowTrade.Controllers
 {

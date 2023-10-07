@@ -1,9 +1,9 @@
-﻿using FlowTrade.Data;
+﻿using FlowTrade.Infrastructure.Data;
 using FlowTrade.Interfaces;
 using FlowTrade.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace FlowTrade.Repositories
+namespace FlowTrade.Authentication.Repositories
 {
     public class ProductionPossibilityRepository : IProductionPossibilityRepository
     {

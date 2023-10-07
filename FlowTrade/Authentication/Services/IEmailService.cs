@@ -1,4 +1,4 @@
-﻿namespace FlowTrade.Services
+﻿namespace FlowTrade.Authentication.Services
 {
     public interface IEmailService
     {

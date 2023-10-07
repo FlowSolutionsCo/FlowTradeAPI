@@ -1,14 +1,12 @@
-﻿using FlowTrade.DTOs;
-using FlowTrade.Helpers;
-using FlowTrade.Models;
-using FlowTrade.Services;
+﻿using FlowTrade.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
-using System.Text;
-using System;
-using FlowTrade.Data;
 using Microsoft.IdentityModel.Tokens;
+using FlowTrade.Infrastructure.Data;
+using FlowTrade.ProductionRequest.Models;
+using MediatR;
+using FlowTrade.ProductionRequest.Requests;
+using FlowTrade.ProductionRequest.Queries;
 
 namespace FlowTrade.Controllers
 {
@@ -17,56 +15,34 @@ namespace FlowTrade.Controllers
     public class ProductionRequestController : ControllerBase
     {
         private readonly AppDbContext appDbContext;
-        private readonly UserManager<UserCompany> _userManager;
+        private readonly UserManager<UserCompany> userManager;
+        private readonly IMediator mediator;
 
-        public ProductionRequestController(AppDbContext appDbContext, UserManager<UserCompany> userManager)
+        public ProductionRequestController(AppDbContext appDbContext, UserManager<UserCompany> userManager, IMediator mediator)
         {
             this.appDbContext = appDbContext;
-            _userManager = userManager;
+            this.userManager = userManager;
+            this.mediator = mediator;
         }
 
-        [HttpPost("AddProductionRequest")]
-        public async Task<IActionResult> AddProductionRequest(ProductionRequestModel model, string userId)
+        [HttpPost("CreateProductionRequest")]
+        public async Task<IActionResult> AddProductionRequest([FromQuery]string username, [FromBody]ProductionRequestModel model)
         {
-            await appDbContext.AddAsync(model);
-            var user = await _userManager.FindByNameAsync(userId);
-            if(user.ProductionRequestIds.Length != 0)
-            {
-                user.ProductionRequestIds = $"{user.ProductionRequestIds},{model.RequestId}";
-            }
-            else
-            {
-                user.ProductionRequestIds = model.RequestId.ToString();
-            }
-
-            await appDbContext.SaveChangesAsync();  
-            return Ok();    
+            await this.mediator.Send(new CreateProductionRequestModelRequest(model, username));
+            return Ok(model);
         }
 
-        [HttpGet("GetProductionRequest")]
-        public async Task<IReadOnlyCollection<ProductionRequestModel>> GetProductionRequestsForUser(string userId)
+        [HttpGet("GetProductionRequests")]
+        public async Task<IReadOnlyCollection<ProductionRequestModel>> GetProductionRequestsForUser([FromQuery]string username)
         {
-            var user = await _userManager.FindByNameAsync(userId);
-            var requests = new List<ProductionRequestModel>();
-
-            foreach (var item in user.ProductionRequestIds.Split(','))
-            {
-                if (!item.IsNullOrEmpty())
-                {
-                    requests.Add(appDbContext.ProductionRequests.Find(new Guid(item)));
-                }
-            }
-
-            return requests;
+            return await this.mediator.Send(new GetProductionRequestsForUserQuery(username));
         }
-        [HttpDelete("DeleteRequests")]
-        public async Task DeleteRequestsForUser(string userId)
+
+        [HttpDelete("DeleteProductionRequestById")]
+        public async Task<IActionResult> DeleteRequestsForUser([FromQuery] Guid requestId)
         {
-            var user = await _userManager.FindByNameAsync(userId);
-            user.ProductionRequestIds = string.Empty;
-            await appDbContext.SaveChangesAsync();
+            await this.mediator.Send(new DeleteProductionRequestByIdRequest(requestId));
+            return Ok();
         }
-
-
     }
 }

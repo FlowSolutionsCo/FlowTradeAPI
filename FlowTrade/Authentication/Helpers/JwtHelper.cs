@@ -1,4 +1,4 @@
-﻿namespace FlowTrade.Helpers
+﻿namespace FlowTrade.Authentication.Helpers
 {
     using Microsoft.IdentityModel.Tokens;
     using System;
