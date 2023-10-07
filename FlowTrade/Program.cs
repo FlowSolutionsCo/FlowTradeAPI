@@ -1,3 +1,6 @@
+using Azure.Core.Extensions;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 using FlowTrade.Authentication.Repositories;
 using FlowTrade.Authentication.Services;
 using FlowTrade.Infrastructure.Data;
@@ -7,7 +10,12 @@ using FlowTrade.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Azure.KeyVault;
+using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Azure;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.AzureKeyVault;
 using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
 using System.Text;
@@ -22,20 +30,14 @@ var secretKey = configuration["Jwt:SecretKey"];
 var issuer = configuration["Jwt:Issuer"];
 var audience = configuration["Jwt:Audience"];
 
+var secretClient = new SecretClient(new Uri(configuration["AzureKeyVault:BaseUrl"]), new DefaultAzureCredential());
+
 // Add services to the container.
+builder.Services.AddSingleton(new AzureServiceTokenProvider());
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 builder.Services.AddControllers();
 builder.Services.AddScoped<IProductionPossibilityRepository, ProductionPossibilityRepository>();
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(
-        configuration.GetConnectionString("DefaultConnection"),
-        sqlServerOptionsAction: sqlOptions =>
-        {
-            sqlOptions.EnableRetryOnFailure(
-                maxRetryCount: 5,
-                maxRetryDelay: TimeSpan.FromSeconds(30),
-                errorNumbersToAdd: null);
-        }));
+builder.Services.AddCustomDbContext(secretClient.GetSecret("FlowTrade-Database-ConnectionString").Value.Value);
 
 // Add Identity services
 builder.Services.AddIdentity<UserCompany, IdentityRole>(options =>
@@ -64,7 +66,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
         };
     });
-
 builder.Services.AddSingleton<IEmailService, EmailService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -77,7 +78,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 app.UseHttpsRedirection();
 app.UseRouting();
-app.UseErrorHandlingMiddleware();
+//app.UseErrorHandlingMiddleware();
 app.UseAuthentication();
 app.UseAuthorization();
 

@@ -7,6 +7,8 @@ using FlowTrade.ProductionRequest.Models;
 using MediatR;
 using FlowTrade.ProductionRequest.Requests;
 using FlowTrade.ProductionRequest.Queries;
+using System.Runtime.CompilerServices;
+using Azure.Security.KeyVault.Secrets;
 
 namespace FlowTrade.Controllers
 {
@@ -17,12 +19,14 @@ namespace FlowTrade.Controllers
         private readonly AppDbContext appDbContext;
         private readonly UserManager<UserCompany> userManager;
         private readonly IMediator mediator;
+        private readonly IConfiguration configuration;
 
-        public ProductionRequestController(AppDbContext appDbContext, UserManager<UserCompany> userManager, IMediator mediator)
+        public ProductionRequestController(AppDbContext appDbContext, UserManager<UserCompany> userManager, IMediator mediator, IConfiguration configuration)
         {
             this.appDbContext = appDbContext;
             this.userManager = userManager;
             this.mediator = mediator;
+            this.configuration = configuration;
         }
 
         [HttpPost("CreateProductionRequest")]
@@ -32,7 +36,7 @@ namespace FlowTrade.Controllers
             return Ok(model);
         }
 
-        [HttpGet("GetProductionRequests")]
+        [HttpGet("GetProductionRequests")] 
         public async Task<IReadOnlyCollection<ProductionRequestModel>> GetProductionRequestsForUser([FromQuery]string username, [FromQuery]bool? isActive)
         {
             return await this.mediator.Send(new GetProductionRequestsForUserQuery(username, isActive));
