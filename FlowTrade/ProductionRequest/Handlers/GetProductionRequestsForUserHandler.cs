@@ -1,9 +1,12 @@
-﻿using FlowTrade.Infrastructure.Data;
+﻿using FlowTrade.Exceptions;
+using FlowTrade.Infrastructure.Data;
 using FlowTrade.Models;
 using FlowTrade.ProductionRequest.Models;
 using FlowTrade.ProductionRequest.Queries;
 using MediatR;
+using System.Linq;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 
 namespace FlowTrade.ProductionRequest.Handlers
 {
@@ -21,14 +24,31 @@ namespace FlowTrade.ProductionRequest.Handlers
         public async Task<IReadOnlyCollection<ProductionRequestModel>> Handle(GetProductionRequestsForUserQuery request, CancellationToken cancellationToken)
         {
             var user = await this.userManager.FindByNameAsync(request.Username);
+            if (user == null)
+            {
+                throw new UserNotFoundException();
+            }
+
             var requests = new List<ProductionRequestModel>();
 
-            foreach (var item in user.ProductionRequestIds.Split(','))
+            var requestsIds = user.ProductionRequestIds.Split(',');
+
+            if (requestsIds.IsNullOrEmpty())
+            {
+                throw new ProductionRequestNotFoundException("User doesn't have any production requests linked");
+            }
+
+            foreach (var item in requestsIds)
             {
                 if (!string.IsNullOrEmpty(item))
                 {
                     requests.Add(this.appDbContext.ProductionRequests.Find(new Guid(item)));
                 }
+            }
+
+            if (request.isActive != null)
+            {
+                return requests.Where(x => x.IsActive == request.isActive).ToList();
             }
 
             return requests;

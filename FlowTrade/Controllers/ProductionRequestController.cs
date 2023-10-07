@@ -33,9 +33,9 @@ namespace FlowTrade.Controllers
         }
 
         [HttpGet("GetProductionRequests")]
-        public async Task<IReadOnlyCollection<ProductionRequestModel>> GetProductionRequestsForUser([FromQuery]string username)
+        public async Task<IReadOnlyCollection<ProductionRequestModel>> GetProductionRequestsForUser([FromQuery]string username, [FromQuery]bool? isActive)
         {
-            return await this.mediator.Send(new GetProductionRequestsForUserQuery(username));
+            return await this.mediator.Send(new GetProductionRequestsForUserQuery(username, isActive));
         }
 
         [HttpDelete("DeleteProductionRequestById")]

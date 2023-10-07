@@ -1,6 +1,7 @@
 using FlowTrade.Authentication.Repositories;
 using FlowTrade.Authentication.Services;
 using FlowTrade.Infrastructure.Data;
+using FlowTrade.Infrastructure.Middleware;
 using FlowTrade.Interfaces;
 using FlowTrade.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -76,7 +77,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 app.UseHttpsRedirection();
 app.UseRouting();
-
+app.UseErrorHandlingMiddleware();
 app.UseAuthentication();
 app.UseAuthorization();
 

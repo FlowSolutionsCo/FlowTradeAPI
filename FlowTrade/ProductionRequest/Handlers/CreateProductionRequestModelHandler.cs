@@ -1,4 +1,5 @@
-﻿using FlowTrade.Infrastructure.Data;
+﻿using FlowTrade.Exceptions;
+using FlowTrade.Infrastructure.Data;
 using FlowTrade.Models;
 using FlowTrade.ProductionRequest.Requests;
 using MediatR;
@@ -21,6 +22,11 @@ namespace FlowTrade.ProductionRequest.Handlers
         public async Task Handle(CreateProductionRequestModelRequest request, CancellationToken cancellationToken)
         {
             var user = await this.userManager.FindByNameAsync(request.Username);
+
+            if (user == null)
+            {
+                throw new UserNotFoundException();
+            }
 
             await this.appDbContext.AddAsync(request.Model, cancellationToken);
 

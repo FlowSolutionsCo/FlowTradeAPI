@@ -1,4 +1,5 @@
-﻿using FlowTrade.Infrastructure.Data;
+﻿using FlowTrade.Exceptions;
+using FlowTrade.Infrastructure.Data;
 using FlowTrade.Models;
 using FlowTrade.ProductionRequest.Requests;
 using MediatR;
@@ -22,9 +23,20 @@ namespace FlowTrade.ProductionRequest.Handlers
         {
             var productionRequest = await this.appDbContext.ProductionRequests.FindAsync(request.RequestId);
 
+            if (productionRequest == null)
+            {
+                throw new ProductionRequestNotFoundException();
+            }
+
             if (productionRequest != null)
             {
                 var user = await this.userManager.FindByNameAsync(productionRequest.OwnerUsername);
+
+                if (user == null)
+                {
+                    throw new ProductionRequestNotFoundException();
+                }
+
                 var userRequests = user.ProductionRequestIds.Split(',');
 
                 var updatedIds = userRequests.ToList();
