@@ -1,10 +1,9 @@
 ﻿namespace FlowTrade.Models
 {
-    public class ProductionPossibility
+    public class ProductionPossibilityModel
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public ICollection<User>? Users { get; set; }
-
+        public ICollection<UserCompany>? Users { get; set; }
     }
 }

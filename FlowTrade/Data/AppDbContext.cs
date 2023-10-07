@@ -1,12 +1,11 @@
 ﻿using FlowTrade.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using FlowTrade.Models.ProductionRequestModel;
 using System.Reflection.Emit;
 
 namespace FlowTrade.Data
 {
-    public class AppDbContext : IdentityDbContext<User>
+    public class AppDbContext : IdentityDbContext<UserCompany>
     {
         public DbSet<ProductionRequestModel> ProductionRequests { get; set; }
 
@@ -14,7 +13,7 @@ namespace FlowTrade.Data
         {
         }
 
-        public DbSet<ProductionPossibility> ProductionPossibilities { get; set; }
+        public DbSet<ProductionPossibilityModel> ProductionPossibilities { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

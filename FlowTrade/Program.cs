@@ -34,7 +34,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         }));
 
 // Add Identity services
-builder.Services.AddIdentity<User, IdentityRole>(options =>
+builder.Services.AddIdentity<UserCompany, IdentityRole>(options =>
 {
     // Configure password options
     options.Password.RequireDigit = true;

@@ -15,15 +15,15 @@ namespace FlowTrade.Controllers
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
+        private readonly UserManager<UserCompany> _userManager;
+        private readonly SignInManager<UserCompany> _signInManager;
         private readonly IConfiguration _configuration;
         private readonly IEmailService _emailService;
         private readonly IProductionPossibilityRepository _productionPossibilityRepository;
 
         public AuthenticationController(
-            UserManager<User> userManager, 
-            SignInManager<User> signInManager, 
+            UserManager<UserCompany> userManager, 
+            SignInManager<UserCompany> signInManager, 
             IConfiguration configuration, 
             IEmailService emailService,
             IProductionPossibilityRepository productionPossibilityRepository)
@@ -53,7 +53,7 @@ namespace FlowTrade.Controllers
 
             var productionPossibilities = await _productionPossibilityRepository.GetProductionPossibilitiesByIds(model.ProductionPossibilityIds);
 
-            var user = new User
+            var user = new UserCompany
             {
                 UserName = model.Username,
                 Email = model.Email,

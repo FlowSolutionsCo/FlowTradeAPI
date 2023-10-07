@@ -13,13 +13,15 @@ namespace FlowTrade.Repositories
         {
             _context = context;
         }
-        public async Task<List<ProductionPossibility>> GetProductionPossibilitiesByIds(List<int> ids)
+
+        public async Task<List<ProductionPossibilityModel>> GetProductionPossibilitiesByIds(List<int> ids)
         {
             return await _context.ProductionPossibilities
                 .Where(p => ids.Contains(p.Id))
                 .ToListAsync();
         }
-        public async Task<List<ProductionPossibility>> GetAllPossibilities()
+
+        public async Task<List<ProductionPossibilityModel>> GetAllPossibilities()
         {
             return await _context.ProductionPossibilities.ToListAsync();
         }
