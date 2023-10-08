@@ -6,7 +6,6 @@ using FlowTrade.Infrastructure.Data;
 using FlowTrade.Infrastructure.Middleware;
 using FlowTrade.Interfaces;
 using FlowTrade.Models;
-using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Azure.Services.AppAuthentication;
@@ -35,10 +34,6 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.Get
 builder.Services.AddControllers();
 builder.Services.AddScoped<IProductionPossibilityRepository, ProductionPossibilityRepository>();
 builder.Services.AddCustomDbContext(secretClient.GetSecret("FlowTrade-Database-ConnectionString").Value.Value);
-
-
-// Register Application Insights
-builder.Services.AddSingleton<TelemetryClient>();
 
 // Add Identity services
 builder.Services.AddIdentity<UserCompany, IdentityRole>(options =>

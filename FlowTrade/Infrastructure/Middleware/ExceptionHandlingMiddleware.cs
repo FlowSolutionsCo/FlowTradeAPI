@@ -1,7 +1,6 @@
 ﻿namespace FlowTrade.Infrastructure.Middleware
 {
     using FlowTrade.Exceptions;
-    using Microsoft.ApplicationInsights;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Azure;
