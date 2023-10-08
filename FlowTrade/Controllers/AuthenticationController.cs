@@ -22,7 +22,7 @@ namespace FlowTrade.Controllers
         private readonly IProductionPossibilityRepository _productionPossibilityRepository;
 
         public AuthenticationController(
-            UserManager<UserCompany> userManager, 
+            UserManager<UserCompany> userManager,
             SignInManager<UserCompany> signInManager, 
             IConfiguration configuration, 
             IEmailService emailService,
@@ -38,7 +38,6 @@ namespace FlowTrade.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterDto model)
         {
-            // Validate the model
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
