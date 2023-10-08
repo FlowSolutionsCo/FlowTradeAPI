@@ -12,15 +12,12 @@
     {
         private readonly RequestDelegate next;
         private readonly ILogger<ErrorHandlingMiddleware> logger;
-        private readonly TelemetryClient telemetry;
         private readonly IConfiguration configuration;
 
-        public ErrorHandlingMiddleware(RequestDelegate next, ILogger<ErrorHandlingMiddleware> logger, TelemetryClient telemetry, IConfiguration configuration)
+        public ErrorHandlingMiddleware(RequestDelegate next, ILogger<ErrorHandlingMiddleware> logger, IConfiguration configuration)
         {
             this.next = next;
             this.logger = logger;
-            this.telemetry = telemetry;
-            this.configuration = configuration;
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -31,7 +28,7 @@
             }
             catch (ApiException ex)
             {
-                telemetry.TrackException(ex);
+
                 logger.LogError(ex, "An error occurred:");
 
                 context.Response.StatusCode = ex.StatusCode;
@@ -41,7 +38,6 @@
             }
             catch (Exception ex)
             {
-                telemetry.TrackException(ex);
                 logger.LogError(ex, "An error occurred:");
 
                 context.Response.StatusCode = 500;
