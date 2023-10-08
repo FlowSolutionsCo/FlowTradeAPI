@@ -11,9 +11,8 @@
     {
         private readonly RequestDelegate next;
         private readonly ILogger<ErrorHandlingMiddleware> logger;
-        private readonly IConfiguration configuration;
 
-        public ErrorHandlingMiddleware(RequestDelegate next, ILogger<ErrorHandlingMiddleware> logger, IConfiguration configuration)
+        public ErrorHandlingMiddleware(RequestDelegate next, ILogger<ErrorHandlingMiddleware> logger)
         {
             this.next = next;
             this.logger = logger;
@@ -27,7 +26,6 @@
             }
             catch (ApiException ex)
             {
-
                 logger.LogError(ex, "An error occurred:");
 
                 context.Response.StatusCode = ex.StatusCode;
