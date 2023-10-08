@@ -6,7 +6,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>04e8134d-5d08-4a33-902c-3bbae7224de6</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <ApplicationInsightsResourceId>/subscriptions/c5ff6040-6797-4e90-afbc-c04184b5b866/resourceGroups/FlowTrade/providers/microsoft.insights/components/FlowTradeApplicationInsights</ApplicationInsightsResourceId>
   </PropertyGroup>
 
   <ItemGroup>
