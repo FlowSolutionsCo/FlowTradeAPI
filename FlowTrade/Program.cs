@@ -36,6 +36,10 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<IProductionPossibilityRepository, ProductionPossibilityRepository>();
 builder.Services.AddCustomDbContext(secretClient.GetSecret("FlowTrade-Database-ConnectionString").Value.Value);
 
+
+// Register Application Insights
+builder.Services.AddSingleton<TelemetryClient>();
+
 // Add Identity services
 builder.Services.AddIdentity<UserCompany, IdentityRole>(options =>
 {
