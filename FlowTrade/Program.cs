@@ -26,13 +26,15 @@ var configuration = new ConfigurationBuilder()
     .SetBasePath(builder.Environment.ContentRootPath)
     .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
     .Build();
-var secretKey = configuration["Jwt:SecretKey"];
-var issuer = configuration["Jwt:Issuer"];
-var audience = configuration["Jwt:Audience"];
 
 var secretClient = new SecretClient(new Uri(configuration["AzureKeyVault:BaseUrl"]), new DefaultAzureCredential());
 
+var secretKey = secretClient.GetSecret("FlowTrade-Jwt-SecretKey").Value.Value;
+var issuer = secretClient.GetSecret("FlowTrade-Jwt-Issuer").Value.Value;
+var audience = secretClient.GetSecret("FlowTrade-Jwt-Audience").Value.Value;
+
 // Add services to the container.
+builder.Services.AddSingleton(new SecretClient(new Uri("AzureKeyVault:BaseUrl"), new DefaultAzureCredential()));
 builder.Services.AddSingleton(new AzureServiceTokenProvider());
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 builder.Services.AddControllers();
@@ -78,7 +80,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 app.UseHttpsRedirection();
 app.UseRouting();
-//app.UseErrorHandlingMiddleware();
+app.UseErrorHandlingMiddleware();
 app.UseAuthentication();
 app.UseAuthorization();
 

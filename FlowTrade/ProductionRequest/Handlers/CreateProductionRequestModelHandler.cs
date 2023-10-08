@@ -28,7 +28,14 @@ namespace FlowTrade.ProductionRequest.Handlers
                 throw new UserNotFoundException();
             }
 
-            await this.appDbContext.AddAsync(request.Model, cancellationToken);
+            var productionRequest = await this.appDbContext.ProductionRequests.FindAsync(new Guid(request.Model.RequestId.ToString()));
+
+            if (productionRequest != null)
+            {
+                throw new ResourceAlreadyExistsException();
+            }
+
+            await this.appDbContext.ProductionRequests.AddAsync(request.Model, cancellationToken);
 
             if (user.ProductionRequestIds.Length != 0)
             {

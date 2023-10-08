@@ -33,17 +33,14 @@ namespace FlowTrade.ProductionRequest.Handlers
 
             var requestsIds = user.ProductionRequestIds.Split(',');
 
-            if (requestsIds.IsNullOrEmpty())
-            {
-                throw new ProductionRequestNotFoundException("User doesn't have any production requests linked");
-            }
-
             foreach (var item in requestsIds)
             {
-                if (!string.IsNullOrEmpty(item))
+                if (item == "")
                 {
-                    requests.Add(this.appDbContext.ProductionRequests.Find(new Guid(item)));
+                    throw new ProductionRequestNotFoundException("User doesn't have any production requests linked");
                 }
+
+                requests.Add(this.appDbContext.ProductionRequests.Find(new Guid(item)));
             }
 
             if (request.isActive != null)
