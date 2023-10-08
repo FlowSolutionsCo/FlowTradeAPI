@@ -1,4 +1,3 @@
-using Azure.Core.Extensions;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using FlowTrade.Authentication.Repositories;
@@ -7,15 +6,11 @@ using FlowTrade.Infrastructure.Data;
 using FlowTrade.Infrastructure.Middleware;
 using FlowTrade.Interfaces;
 using FlowTrade.Models;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Azure.KeyVault;
 using Microsoft.Azure.Services.AppAuthentication;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Azure;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.AzureKeyVault;
+using Microsoft.IdentityModel.Abstractions;
 using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
 using System.Text;
@@ -40,6 +35,10 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.Get
 builder.Services.AddControllers();
 builder.Services.AddScoped<IProductionPossibilityRepository, ProductionPossibilityRepository>();
 builder.Services.AddCustomDbContext(secretClient.GetSecret("FlowTrade-Database-ConnectionString").Value.Value);
+
+
+// Register Application Insights
+builder.Services.AddSingleton<TelemetryClient>();
 
 // Add Identity services
 builder.Services.AddIdentity<UserCompany, IdentityRole>(options =>
