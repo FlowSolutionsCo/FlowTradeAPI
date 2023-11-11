@@ -1,4 +1,3 @@
-using FlowTrade.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
@@ -8,6 +7,7 @@ using FlowTrade.Interfaces;
 using FlowTrade.Authentication.DTOs;
 using FlowTrade.Authentication.Helpers;
 using FlowTrade.Authentication.Services;
+using FlowTrade.ProductionPossibility.Models;
 
 namespace FlowTrade.Controllers
 {
@@ -154,7 +154,7 @@ namespace FlowTrade.Controllers
         {
             var possibilities = await productionPossibilityRepository.GetAllPossibilities();
 
-            var possibilityObjects = possibilities.Select(p => new { p.Id, p.Name }).ToList();
+            var possibilityObjects = possibilities.Select(p => new { p.Id, p.Type }).ToList();
 
             return Ok(possibilityObjects);
         }

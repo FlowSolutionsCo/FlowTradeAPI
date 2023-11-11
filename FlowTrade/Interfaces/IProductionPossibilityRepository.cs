@@ -1,4 +1,4 @@
-﻿using FlowTrade.Models;
+﻿using FlowTrade.ProductionPossibility.Models;
 
 namespace FlowTrade.Interfaces
 {

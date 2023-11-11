@@ -5,7 +5,7 @@ using FlowTrade.Authentication.Services;
 using FlowTrade.Infrastructure.Data;
 using FlowTrade.Infrastructure.Middleware;
 using FlowTrade.Interfaces;
-using FlowTrade.Models;
+using FlowTrade.ProductionPossibility.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Azure.Services.AppAuthentication;

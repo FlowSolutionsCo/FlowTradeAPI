@@ -1,10 +1,9 @@
 ﻿using FlowTrade.Exceptions;
 using FlowTrade.Infrastructure.Data;
-using FlowTrade.Models;
+using FlowTrade.ProductionPossibility.Models;
 using FlowTrade.ProductionRequest.Requests;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace FlowTrade.ProductionRequest.Handlers
 {

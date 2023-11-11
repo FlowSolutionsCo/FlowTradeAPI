@@ -1,33 +1,36 @@
 ﻿using FlowTrade.Exceptions;
 using FlowTrade.Infrastructure.Data;
-using FlowTrade.ProductionPossibility.Models;
 using FlowTrade.ProductionRequest.Models;
 using FlowTrade.ProductionRequest.Queries;
 using MediatR;
+using System.Linq;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using FlowTrade.ProductionPossibility.Models;
+using FlowTrade.ProductionPossibility.Queries;
 
-namespace FlowTrade.ProductionRequest.Handlers
+namespace FlowTrade.ProductionPossibility.Handlers
 {
-    public class GetProductionRequestsForUserHandler : IRequestHandler<GetProductionRequestsForUserQuery, IReadOnlyCollection<ProductionRequestModel>>
+    public class GetProductionPossibilitiesForUserHandler : IRequestHandler<GetProductionPossibiliesForUserQuery, IReadOnlyCollection<ProductionPossibilityModel>>
     {
         private readonly AppDbContext appDbContext;
         private readonly UserManager<UserCompany> userManager;
 
-        public GetProductionRequestsForUserHandler(AppDbContext appDbContext, UserManager<UserCompany> userManager)
+        public GetProductionPossibilitiesForUserHandler(AppDbContext appDbContext, UserManager<UserCompany> userManager)
         {
             this.appDbContext = appDbContext;
             this.userManager = userManager;
         }
 
-        public async Task<IReadOnlyCollection<ProductionRequestModel>> Handle(GetProductionRequestsForUserQuery request, CancellationToken cancellationToken)
+        public async Task<IReadOnlyCollection<ProductionPossibilityModel>> Handle(GetProductionPossibiliesForUserQuery request, CancellationToken cancellationToken)
         {
-            var user = await this.userManager.FindByNameAsync(request.Username);
+            var user = await userManager.FindByNameAsync(request.Username);
             if (user == null)
             {
                 throw new UserNotFoundException();
             }
 
-            var requests = new List<ProductionRequestModel>();
+            var requests = new List<ProductionPossibilityModel>();
 
             var requestsIds = user.ProductionRequestIds.Split(',');
 
@@ -38,12 +41,7 @@ namespace FlowTrade.ProductionRequest.Handlers
                     throw new ProductionRequestNotFoundException("User doesn't have any production requests linked");
                 }
 
-                requests.Add(this.appDbContext.ProductionRequests.Find(new Guid(item)));
-            }
-
-            if (request.isActive != null)
-            {
-                return requests.Where(x => x.IsActive == request.isActive).ToList();
+                requests.Add(appDbContext.ProductionPossibilities.Find(item));
             }
 
             return requests;

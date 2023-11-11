@@ -1,4 +1,4 @@
-﻿using FlowTrade.Models;
+﻿using FlowTrade.ProductionPossibility.Models;
 using FlowTrade.ProductionRequest.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;

@@ -9,10 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Models\Offers\**" />
-    <Content Remove="Models\Offers\**" />
-    <EmbeddedResource Remove="Models\Offers\**" />
-    <None Remove="Models\Offers\**" />
+    <Compile Remove="ProductionPossibility\Offers\**" />
+    <Content Remove="ProductionPossibility\Offers\**" />
+    <EmbeddedResource Remove="ProductionPossibility\Offers\**" />
+    <None Remove="ProductionPossibility\Offers\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,6 +36,8 @@
 
   <ItemGroup>
     <Folder Include="Infrastructure\Migrations\" />
+    <Folder Include="ProductionRequest\Handlers\" />
+    <Folder Include="ProductionRequest\Requests\" />
   </ItemGroup>
 
 </Project>

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace FlowTrade.Models
+namespace FlowTrade.ProductionPossibility.Models
 {
     public class UserCompany : IdentityUser
     {

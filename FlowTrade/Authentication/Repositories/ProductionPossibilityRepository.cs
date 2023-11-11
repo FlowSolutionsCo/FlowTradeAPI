@@ -1,6 +1,6 @@
 ﻿using FlowTrade.Infrastructure.Data;
 using FlowTrade.Interfaces;
-using FlowTrade.Models;
+using FlowTrade.ProductionPossibility.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace FlowTrade.Authentication.Repositories
