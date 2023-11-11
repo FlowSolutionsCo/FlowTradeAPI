@@ -1,26 +1,27 @@
 ﻿using FlowTrade.Exceptions;
 using FlowTrade.Infrastructure.Data;
 using FlowTrade.ProductionPossibility.Models;
-using FlowTrade.ProductionRequest.Requests;
+using FlowTrade.ProductionPossibility.Requests;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Org.BouncyCastle.Crypto;
 
-namespace FlowTrade.ProductionRequest.Handlers
+namespace FlowTrade.ProductionPossibility.Handlers
 {
-    public class DeleteProductionRequestByIdHandler : IRequestHandler<DeleteProductionRequestByIdRequest>
+    public class DeleteProductionPossiblilityByIdHandler : IRequestHandler<DeleteProductionPossibilityByIdRequest>
     {
         private readonly AppDbContext appDbContext;
         private readonly UserManager<UserCompany> userManager;
 
-        public DeleteProductionRequestByIdHandler(AppDbContext appDbContext, UserManager<UserCompany> userManager)
+        public DeleteProductionPossiblilityByIdHandler(AppDbContext appDbContext, UserManager<UserCompany> userManager)
         {
             this.appDbContext = appDbContext;
             this.userManager = userManager;
         }
 
-        public async Task Handle(DeleteProductionRequestByIdRequest request, CancellationToken cancellationToken)
+        public async Task Handle(DeleteProductionPossibilityByIdRequest request, CancellationToken cancellationToken)
         {
-            var productionRequest = await this.appDbContext.ProductionRequests.FindAsync(request.RequestId);
+            var productionRequest = await appDbContext.ProductionRequests.FindAsync(request.RequestId);
 
             if (productionRequest == null)
             {
@@ -29,7 +30,7 @@ namespace FlowTrade.ProductionRequest.Handlers
 
             if (productionRequest != null)
             {
-                var user = await this.userManager.FindByNameAsync(productionRequest.OwnerUsername);
+                var user = await userManager.FindByNameAsync(productionRequest.OwnerUsername);
 
                 if (user == null)
                 {
@@ -43,7 +44,7 @@ namespace FlowTrade.ProductionRequest.Handlers
 
                 user.ProductionRequestIds = string.Join(",", updatedIds);
 
-                this.appDbContext.ProductionRequests.Remove(productionRequest);
+                appDbContext.ProductionRequests.Remove(productionRequest);
                 await appDbContext.SaveChangesAsync();
             }
         }

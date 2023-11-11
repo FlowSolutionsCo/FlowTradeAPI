@@ -1,13 +1,15 @@
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 using FlowTrade.Authentication.Repositories;
 using FlowTrade.Authentication.Services;
 using FlowTrade.Infrastructure.Data;
 using FlowTrade.Infrastructure.Middleware;
 using FlowTrade.Interfaces;
-using FlowTrade.Models;
+using FlowTrade.ProductionPossibility.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Azure.Services.AppAuthentication;
+using Microsoft.IdentityModel.Abstractions;
 using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
 using System.Text;
@@ -18,24 +20,20 @@ var configuration = new ConfigurationBuilder()
     .SetBasePath(builder.Environment.ContentRootPath)
     .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
     .Build();
-var secretKey = configuration["Jwt:SecretKey"];
-var issuer = configuration["Jwt:Issuer"];
-var audience = configuration["Jwt:Audience"];
+
+var secretClient = new SecretClient(new Uri(configuration["AzureKeyVault:BaseUrl"]), new DefaultAzureCredential());
+
+var secretKey = secretClient.GetSecret("FlowTrade-Jwt-SecretKey").Value.Value;
+var issuer = secretClient.GetSecret("FlowTrade-Jwt-Issuer").Value.Value;
+var audience = secretClient.GetSecret("FlowTrade-Jwt-Audience").Value.Value;
 
 // Add services to the container.
+builder.Services.AddSingleton(new SecretClient(new Uri("AzureKeyVault:BaseUrl"), new DefaultAzureCredential()));
+builder.Services.AddSingleton(new AzureServiceTokenProvider());
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 builder.Services.AddControllers();
 builder.Services.AddScoped<IProductionPossibilityRepository, ProductionPossibilityRepository>();
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(
-        configuration.GetConnectionString("DefaultConnection"),
-        sqlServerOptionsAction: sqlOptions =>
-        {
-            sqlOptions.EnableRetryOnFailure(
-                maxRetryCount: 5,
-                maxRetryDelay: TimeSpan.FromSeconds(30),
-                errorNumbersToAdd: null);
-        }));
+builder.Services.AddCustomDbContext(secretClient.GetSecret("FlowTrade-Database-ConnectionString").Value.Value);
 
 // Add Identity services
 builder.Services.AddIdentity<UserCompany, IdentityRole>(options =>
@@ -64,7 +62,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
         };
     });
-
 builder.Services.AddSingleton<IEmailService, EmailService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

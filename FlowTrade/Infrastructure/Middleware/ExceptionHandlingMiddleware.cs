@@ -3,6 +3,7 @@
     using FlowTrade.Exceptions;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.Extensions.Azure;
     using System;
     using System.Threading.Tasks;
 
